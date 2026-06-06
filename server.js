@@ -1,3 +1,9 @@
+const { GoogleGenerativeAI } = require("@google/genai");
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+});
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
@@ -31,7 +37,40 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
 });
 
 // 🤖 CHAT
-app.post("/api/gpt", (req, res) => {
+app.post("/api/gpt", async (req, res) => {
+  const { question } = req.body;
+
+  try {
+    const prompt = `
+Eres un tutor inteligente.
+
+Usa este documento para responder:
+
+${documentText.slice(0, 8000)}
+
+---
+
+Pregunta del estudiante:
+${question}
+
+Responde claro, educativo y resumido.
+`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
+    res.json({ response: text });
+
+  } catch (err) {
+    console.log(err);
+
+    res.json({
+      response:
+        "No se pudo usar IA en este momento. Pero el sistema está funcionando."
+    });
+  }
+});
   const { question } = req.body;
 
   const response = `

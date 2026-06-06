@@ -12,7 +12,7 @@ const uploadFile = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  await fetch("http://localhost:3001/api/upload", {
+  await fetch("https://TU-BACKEND.onrender.com/api/upload", {
     method: "POST",
     body: formData,
   });
@@ -76,7 +76,7 @@ setLoading(true);
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3001/api/gpt', {
+      const response = await fetch('https://TU-BACKEND.onrender.com/api/gpt', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
