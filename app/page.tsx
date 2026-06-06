@@ -12,7 +12,7 @@ const uploadFile = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  await fetch("https://TU-BACKEND.onrender.com/api/upload", {
+  await fetch("https://estudioia-backend.onrender.com", {
     method: "POST",
     body: formData,
   });
@@ -34,7 +34,7 @@ setMessages((prev) => [
 setLoading(true);
 
   try {
-    const response = await fetch('https://TU-BACKEND.onrender.com/api/gpt', {
+    const response = await fetch('https://estudioia-backend.onrender.com', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ setLoading(true);
     setLoading(true);
 
     try {
-      const response = await fetch('https://TU-BACKEND.onrender.com/api/gpt', {
+      const response = await fetch('https://estudioia-backend.onrender.com', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

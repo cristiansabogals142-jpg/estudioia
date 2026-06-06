@@ -1,4 +1,4 @@
-const { GoogleGenerativeAI } = require("@google/genai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
@@ -17,9 +17,10 @@ const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
 });
 
+// PDF en memoria
 let documentText = "";
 
-// SUBIR PDF
+// 📄 SUBIR PDF
 app.post("/api/upload", upload.single("file"), async (req, res) => {
   try {
     const data = await pdfParse(req.file.buffer);
@@ -30,11 +31,12 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
       length: documentText.length,
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Error leyendo PDF" });
   }
 });
 
-// CHAT
+// 🤖 CHAT
 app.post("/api/gpt", async (req, res) => {
   const { question } = req.body;
 
@@ -60,13 +62,16 @@ Responde claro y educativo.
 
   } catch (err) {
     console.log(err);
+
     res.json({
       response: "Error con la IA, pero el servidor funciona."
     });
   }
 });
 
+// PORT
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
+
+app.listen(PORT, "0.0.0.0", () => {
   console.log("Servidor corriendo en puerto", PORT);
 });
