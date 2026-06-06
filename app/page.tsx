@@ -202,12 +202,17 @@ setLoading(true);
           <div className="flex gap-3">
 
             <input
-              type="text"
-              placeholder="Pregunta sobre tus documentos..."
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              className="flex-1 bg-[#222734] border border-[#313849] rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-            />
+  type="text"
+  placeholder="Pregunta sobre tus documentos..."
+  value={question}
+  onChange={(e) => setQuestion(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter') {
+      handleAsk();
+    }
+  }}
+  className="flex-1 bg-[#222734] border border-[#313849] rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+/>
 
             <button
               onClick={handleAsk}
