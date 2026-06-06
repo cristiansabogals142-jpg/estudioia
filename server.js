@@ -1,9 +1,4 @@
 const { GoogleGenerativeAI } = require("@google/genai");
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
-});
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
@@ -16,14 +11,19 @@ app.use(express.json());
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-// 🧠 aquí guardamos el texto del PDF
+// IA
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+});
+
+// PDF en memoria
 let documentText = "";
 
 // 📄 SUBIR PDF
 app.post("/api/upload", upload.single("file"), async (req, res) => {
   try {
     const data = await pdfParse(req.file.buffer);
-
     documentText = data.text;
 
     res.json({
@@ -44,16 +44,14 @@ app.post("/api/gpt", async (req, res) => {
     const prompt = `
 Eres un tutor inteligente.
 
-Usa este documento para responder:
+Usa este documento:
 
 ${documentText.slice(0, 8000)}
 
----
-
-Pregunta del estudiante:
+Pregunta:
 ${question}
 
-Responde claro, educativo y resumido.
+Responde claro y educativo.
 `;
 
     const result = await model.generateContent(prompt);
@@ -66,26 +64,14 @@ Responde claro, educativo y resumido.
     console.log(err);
 
     res.json({
-      response:
-        "No se pudo usar IA en este momento. Pero el sistema está funcionando."
+      response: "Error con la IA, pero el servidor funciona."
     });
   }
 });
-  const { question } = req.body;
 
-  const response = `
-Basado en el documento:
+// PORT
+const PORT = process.env.PORT || 3001;
 
-${documentText.slice(0, 3000)}
-
-Respuesta a: ${question}
-`;
-
-  res.json({
-    response,
-  });
-});
-
-app.listen(3001, () => {
-  console.log("Servidor corriendo en puerto 3001");
+app.listen(PORT, () => {
+  console.log("Servidor corriendo en puerto", PORT);
 });
